@@ -1,0 +1,12 @@
+CREATE TABLE aeronave (
+	id BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
+	nome VARCHAR(50) NOT NULL,
+	fabricante VARCHAR(50) NOT NULL,
+	ano BIGINT(20) NOT NULL,
+    descricao VARCHAR(50) NOT NULL,
+    vendido BOOLEAN,
+    created DATETIME,
+    updated DATETIME
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
