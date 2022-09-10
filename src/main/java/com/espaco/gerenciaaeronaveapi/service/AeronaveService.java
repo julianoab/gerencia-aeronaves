@@ -8,6 +8,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.espaco.gerenciaaeronaveapi.DTO.AeronaveDTO;
+import com.espaco.gerenciaaeronaveapi.mapper.AeronaveMapper;
 import com.espaco.gerenciaaeronaveapi.model.Aeronave;
 import com.espaco.gerenciaaeronaveapi.repository.AeronaveRespository;
 import com.espaco.gerenciaaeronaveapi.service.exceptions.EntidadeNaoEncontradaException;
@@ -18,36 +20,46 @@ public class AeronaveService {
 	@Autowired
 	private AeronaveRespository aeronaveRespository;
 	
-	public Aeronave salvar(Aeronave aeronave) {
-		return aeronaveRespository.save(aeronave);
+	@Autowired
+	AeronaveMapper aeronaveMapper;
+	
+	
+	public AeronaveDTO salvar(AeronaveDTO aeronave) {
+		Aeronave aeronaveEntity = aeronaveRespository.save(aeronaveMapper.converterDtoParaEntidade(aeronave));
+		return aeronaveMapper.converteEntidadeParaDto(aeronaveEntity);
 	}
 	
-	public List<Aeronave> listar() {
-		return aeronaveRespository.findAll();
+	public List<AeronaveDTO> listar() {
+		Integer qtdeNaoVendido = aeronaveRespository.quantidadeAeronaveNaoVendidas();
+		System.out.println("QUANTIDADE DE NAVES NÃO VENDIDADAS " + qtdeNaoVendido);
+		List<Aeronave> aeronaves  = aeronaveRespository.findAll();
+		return aeronaveMapper.converteListaEntidadeParaDTO(aeronaves);
 	}
 	
-	public Aeronave buscarPorId(Long id) {
-		return aeronaveRespository.findById(id).orElseThrow(
+	public AeronaveDTO buscarPorId(Long id) {
+		Aeronave aeronaveEntity = aeronaveRespository.findById(id).orElseThrow(
 				() -> new EntidadeNaoEncontradaException("Aeronave não encontrada " + id));
+		return aeronaveMapper.converteEntidadeParaDto(aeronaveEntity);
 	}
 	 
 	public void deletar(Long id) {
 		aeronaveRespository.deleteById(id);
 	}
 
-	public Aeronave atualizar(@Valid Aeronave aeronave) {
-		Aeronave aeronaveAtualizar =  buscarPorId(aeronave.getId());
+	public AeronaveDTO atualizar(Long id, AeronaveDTO aeronaveDTO) {
+		Aeronave aeronaveAtualizar =  aeronaveMapper.converterDtoParaEntidade(buscarPorId(id));
 		
-		if(aeronaveAtualizar == null) {
-			
-		}
+		aeronaveAtualizar.setAno(aeronaveDTO.getAno());
+		aeronaveAtualizar.setDescricao(aeronaveDTO.getDescricao());
+		aeronaveAtualizar.setFabricante(aeronaveDTO.getFabricante());
+		aeronaveAtualizar.setNome(aeronaveDTO.getNome());
+		aeronaveAtualizar.setVendido(aeronaveDTO.getVendido());
 		
-		aeronaveAtualizar.setAno(aeronave.getAno());
-		aeronaveAtualizar.setDescricao(aeronave.getDescricao());
-		aeronaveAtualizar.setFabricante(aeronave.getFabricante());
-		aeronaveAtualizar.setNome(aeronave.getNome());
-		aeronaveAtualizar.setVendido(aeronave.getVendido());
-		
-		return aeronaveRespository.save(aeronave);
+		return aeronaveMapper.converteEntidadeParaDto(aeronaveRespository.save(aeronaveAtualizar));
+	}
+	
+	public Integer retornaQuantidadeAeronaveNaoVendida() {
+//		System.out.println("Quantidade cadastrad por fabricante "+ aeronaveRespository.quantidadeAeronaveCadastrada() );
+		return aeronaveRespository.quantidadeAeronaveNaoVendidas();
 	}
 }
