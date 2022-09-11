@@ -1,7 +1,5 @@
 package com.espaco.gerenciaaeronaveapi.model;
 
-import javax.persistence.Entity;
-
 public class AeronaveQtdeCadastradaPorFabricante {
 	String fabricante;
 	Integer quantidadeCadastrada;
@@ -17,6 +15,12 @@ public class AeronaveQtdeCadastradaPorFabricante {
 	}
 	public void setQuantidadeCadastrada(Integer quantidadeCadastrada) {
 		this.quantidadeCadastrada = quantidadeCadastrada;
+	}
+	
+	@Override
+	public String toString() {
+		return "AeronaveQtdeCadastradaPorFabricante [fabricante=" + fabricante + ", quantidadeCadastrada="
+				+ quantidadeCadastrada + "]";
 	}
 	
 }

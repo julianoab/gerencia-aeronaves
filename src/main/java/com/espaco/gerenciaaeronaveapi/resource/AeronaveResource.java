@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.espaco.gerenciaaeronaveapi.DTO.AeronaveDTO;
 import com.espaco.gerenciaaeronaveapi.mapper.AeronaveMapper;
 import com.espaco.gerenciaaeronaveapi.model.Aeronave;
+import com.espaco.gerenciaaeronaveapi.model.AeronaveQtdeCadastradaPorFabricante;
 import com.espaco.gerenciaaeronaveapi.service.AeronaveService;
 
 @RestController
@@ -64,6 +65,12 @@ public class AeronaveResource {
 	public Integer quantidadeNaoVendida() {
 		Integer quantidadeNaoVendida = aeronaveService.retornaQuantidadeAeronaveNaoVendida();
 		return quantidadeNaoVendida;
+	}
+	
+	@GetMapping("/quantidade-cadastrada-fabricante")
+	public ResponseEntity<List<AeronaveQtdeCadastradaPorFabricante>> retornaQuantidadeAeronaveCadastradaPorFabricante() {
+		List<AeronaveQtdeCadastradaPorFabricante> quantidadeCadastrada = aeronaveService.retornaQuantidadeAeronaveCadastradaPorFabricante();
+		return ResponseEntity.ok().body(quantidadeCadastrada);
 	}
 
 }
